@@ -2,7 +2,7 @@ import express from "express";
 
 let app = express();
 
-app.get("/", async (req, res) => {
+app.get("/backend/", async (req, res) => {
   await res.send({ data: "Lili" });
 });
 
