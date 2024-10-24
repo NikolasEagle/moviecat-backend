@@ -1,9 +1,9 @@
-import { Express } from "express";
+import express from "express";
 
 let app = express();
 
 app.get("/", async (req, res) => {
-  await res.send("Lili");
+  await res.send({ data: "Lili" });
 });
 
 app.listen(5000, () =>
