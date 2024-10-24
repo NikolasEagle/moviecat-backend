@@ -1,1 +1,1 @@
-# moviecat-api
+# moviecat
