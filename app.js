@@ -1,11 +1,21 @@
 import express from "express";
 
+import https from "https";
+
+import path from "path";
+
+import fs from "fs";
+
+let httpsOptions = {
+  key: fs.readFileSync("privkey.pem"),
+
+  cert: fs.readFileSync("fullchain.pem"),
+};
+
 let app = express();
 
-app.get("/backend/", async (req, res) => {
-  await res.send({ data: "Lili" });
+app.get("/", async (req, res) => {
+  res.sendFile(path.resolve("public/index.html"));
 });
 
-app.listen(5000, () =>
-  console.log("Server is running on http://localhost:5000")
-);
+https.createServer(httpsOptions, app).listen(443);
