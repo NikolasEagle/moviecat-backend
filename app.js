@@ -18,4 +18,6 @@ app.get("/", async (req, res) => {
   res.sendFile(path.resolve("public/index.html"));
 });
 
-https.createServer(httpsOptions, app).listen(443);
+export { app };
+
+//https.createServer(httpsOptions, app).listen(443);
