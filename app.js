@@ -44,6 +44,20 @@ app.get("/api/movies/search/:q/pages/:page", async (req, res) => {
   }
 });
 
+app.get("/api/movies/info/:movieId", async (req, res) => {
+  try {
+    let response = await fetch(
+      `https://kinobd.xyz/api/films/${req.params.movieId}`
+    );
+
+    let body = await response.json();
+
+    res.send(body);
+  } catch (error) {
+    res.send({});
+  }
+});
+
 app.listen(port, () => console.log(`Server is running on ${port}`));
 
 export { app };
