@@ -16,7 +16,7 @@ const port = 5000;
 
 let app = express();
 
-app.get("/api/films/:page", async (req, res) => {
+app.get("/api/movies/pages/:page", async (req, res) => {
   try {
     let response = await fetch(
       `https://kinobd.xyz/api/films?page=${req.params.page}`
@@ -30,10 +30,10 @@ app.get("/api/films/:page", async (req, res) => {
   }
 });
 
-app.get("/api/films/search/:q", async (req, res) => {
+app.get("/api/movies/search/:q/pages/:page", async (req, res) => {
   try {
     let response = await fetch(
-      `https://kinobd.xyz/api/films/search/title?q=${req.params.q}`
+      `https://kinobd.xyz/api/films/search/title?q=${req.params.q}&&page=${req.params.page}`
     );
 
     let body = await response.json();
