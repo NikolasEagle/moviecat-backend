@@ -6,60 +6,22 @@ import path from "path";
 
 import fs from "fs";
 
-const port = 5000;
+const port = 443;
 
-/*const httpsOptions = {
+const httpsOptions = {
   key: fs.readFileSync("privkey.pem"),
 
   cert: fs.readFileSync("fullchain.pem"),
-};*/
+};
 
 let app = express();
 
-app.get("/api/movies/pages/:page", async (req, res) => {
-  try {
-    let response = await fetch(
-      `https://kinobd.xyz/api/films?page=${req.params.page}`
-    );
-
-    let body = await response.json();
-
-    res.send(body);
-  } catch (error) {
-    res.send({});
-  }
+app.get("/", async (req, res) => {
+  res.sendFile(path.resolve("public/index.html"));
 });
 
-app.get("/api/movies/search/:q/pages/:page", async (req, res) => {
-  try {
-    let response = await fetch(
-      `https://kinobd.xyz/api/films/search/title?q=${req.params.q}&&page=${req.params.page}`
-    );
-
-    let body = await response.json();
-
-    res.send(body);
-  } catch (error) {
-    res.send({});
-  }
-});
-
-app.get("/api/movies/info/:movieId", async (req, res) => {
-  try {
-    let response = await fetch(
-      `https://kinobd.xyz/api/films/${req.params.movieId}`
-    );
-
-    let body = await response.json();
-
-    res.send(body);
-  } catch (error) {
-    res.send({});
-  }
-});
-
-app.listen(port, () => console.log(`Server is running on ${port}`));
+https
+  .createServer(httpsOptions, app)
+  .listen(port, () => console.log(`Server is running`));
 
 export { app };
-
-//https.createServer(httpsOptions, app).listen(443);
