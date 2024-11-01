@@ -28,7 +28,7 @@ app.get("/search/:query/pages/:page", async (req, res) => {
   res.sendFile(path.resolve("public/index.html"));
 });
 
-app.get("/search/:query/pages/:page", async (req, res) => {
+app.get("/movies/:movieID", async (req, res) => {
   res.sendFile(path.resolve("public/index.html"));
 });
 
