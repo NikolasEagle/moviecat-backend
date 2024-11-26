@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
 export async function sendMail(email, name, surname, password) {
   try {
     await transporter.sendMail({
-      from: "Admin",
+      from: `"Admin" <root@${process.env.DOMAIN}>`,
 
       to: process.env.EMAIL,
 

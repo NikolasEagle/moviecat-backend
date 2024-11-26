@@ -36,12 +36,6 @@ const httpsOptions = {
   cert: fs.readFileSync("/etc/letsencrypt/live/moviecat.online/fullchain.pem"),
 };
 
-app.use(express.static(path.resolve("public")));
-
-app.use("/*", (req, res) => {
-  res.sendFile(path.resolve("public/index.html"));
-});
-
 app.post("/register", async (req, res) => {
   const id = nanoid();
 
@@ -107,8 +101,18 @@ app.post("/login", async (req, res) => {
   }
 });
 
-https
+app.use(express.static(path.resolve("public")));
+
+app.use("/*", (req, res) => {
+  if (req.method === "GET") {
+    res.sendFile(path.resolve("public/index.html"));
+  }
+});
+
+app.listen(8000, () => console.log("Server"));
+
+/*https
   .createServer(httpsOptions, app)
-  .listen(port, () => console.log(`Server is running`));
+  .listen(port, () => console.log(`Server is running`));*/
 
 export { app };
