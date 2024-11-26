@@ -31,9 +31,9 @@ import https from "https";
 const port = 443;
 
 const httpsOptions = {
-  key: fs.readFileSync("privkey.pem"),
+  key: fs.readFileSync("/etc/letsencrypt/live/moviecat.online/privkey.pem"),
 
-  cert: fs.readFileSync("fullchain.pem"),
+  cert: fs.readFileSync("/etc/letsencrypt/live/moviecat.online/fullchain.pem"),
 };
 
 app.use(express.static(path.resolve("public")));
