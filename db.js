@@ -1,7 +1,6 @@
 import pg from "pg";
 
 import dotenv from "dotenv";
-import moment from "moment";
 
 dotenv.config();
 
@@ -60,8 +59,8 @@ export async function addSession(id, date, userId, ip, userAgent) {
   }
 }
 
-export async function checkSession(sessionId, ip, userAgent) {
-  const query = `SELECT expires_at FROM sessions WHERE id = '${sessionId}' AND ip = '${ip}' AND user_agent = '${userAgent}'`;
+export async function checkSession(sessionId, userAgent) {
+  const query = `SELECT expires_at FROM sessions WHERE id = '${sessionId}' AND user_agent = '${userAgent}'`;
 
   console.log(await db.query(query));
 
@@ -69,17 +68,7 @@ export async function checkSession(sessionId, ip, userAgent) {
     const { rowCount, rows } = await db.query(query);
 
     if (rowCount) {
-      const currentDate = moment().format("YYYY-MM-DD hh:mm:ss");
-
-      const expires = rows[0].expires_at;
-
-      if (currentDate > expires) {
-        await deleteSession(sessionId);
-
-        return false;
-      } else {
-        return true;
-      }
+      return true;
     } else {
       return rowCount;
     }
@@ -88,7 +77,9 @@ export async function checkSession(sessionId, ip, userAgent) {
   }
 }
 
-export async function deleteSession(sessionId) {
+export async function deleteSession(cookies) {
+  const sessionId = cookies[process.env.SESSION_TOKEN];
+
   const query = `DELETE FROM sessions WHERE id = '${sessionId}'`;
 
   try {

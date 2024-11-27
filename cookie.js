@@ -3,7 +3,9 @@ import { nanoid } from "nanoid";
 import { addSession, checkSession } from "./db.js";
 import moment from "moment";
 
-const sessionName = "session_movie_cat";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export async function createCookie(userId, ip, userAgent) {
   const sessionId = nanoid();
@@ -21,10 +23,10 @@ export async function createCookie(userId, ip, userAgent) {
   };
 }
 
-export async function checkCookie(cookies, ip, userAgent) {
-  const sessionId = cookies[sessionName];
+export async function checkCookie(cookies, userAgent) {
+  const sessionId = cookies[process.env.SESSION_TOKEN];
 
-  const session = await checkSession(sessionId, ip, userAgent);
+  const session = await checkSession(sessionId, userAgent);
 
   return session;
 }

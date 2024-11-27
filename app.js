@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 import { nanoid } from "nanoid";
 
-import { addUser, checkUser } from "./db.js";
+import { addUser, checkUser, deleteSession } from "./db.js";
 
 import { createHashedPassword, checkPassword } from "./pw.js";
 
@@ -61,12 +61,10 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const cookies = req.cookies;
 
-  const ip = req.ip;
-
   const userAgent = req.headers["user-agent"];
 
   try {
-    const sessionToken = await checkCookie(cookies, ip, userAgent);
+    const sessionToken = await checkCookie(cookies, userAgent);
 
     if (sessionToken) {
       res.status(201).json();
@@ -101,18 +99,26 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.delete("/login", async (req, res) => {
+  const cookies = req.cookies;
+
+  try {
+    await deleteSession(cookies);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 app.use(express.static(path.resolve("public")));
 
-app.use("/*", (req, res) => {
+app.use("/", (req, res) => {
   if (req.method === "GET") {
     res.sendFile(path.resolve("public/index.html"));
   }
 });
 
-app.listen(8000, () => console.log("Server"));
-
-/*https
+https
   .createServer(httpsOptions, app)
-  .listen(port, () => console.log(`Server is running`));*/
+  .listen(port, () => console.log(`Server is running`));
 
 export { app };
