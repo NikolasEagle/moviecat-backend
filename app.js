@@ -1,12 +1,16 @@
 import express from "express";
 
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const app = express();
 
 app.use(express.json());
 
-import cookieParser from "cookie-parser";
+/*import cookieParser from "cookie-parser";
 
-app.use(cookieParser());
+app.use(cookieParser());*/
 
 import bodyParser from "body-parser";
 
@@ -14,13 +18,43 @@ app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+import session from "express-session";
+
+import { RedisStore } from "connect-redis";
+
+import redis from "redis";
+
+const redisClient = redis.createClient();
+
+await redisClient.connect();
+
+app.use(
+  session({
+    store: new RedisStore({
+      host: process.env.HOST_REDIS,
+
+      port: process.env.PORT_REDIS,
+
+      client: redisClient,
+    }),
+
+    secret: process.env.SESSION_SECRET_KEY,
+
+    resave: true,
+
+    saveUninitialized: false,
+
+    cookie: { maxAge: 60000 },
+  })
+);
+
 import { nanoid } from "nanoid";
 
-import { addUser, checkUser, deleteSession } from "./db.js";
+import { addUser, checkUser } from "./db.js";
 
 import { createHashedPassword, checkPassword } from "./pw.js";
 
-import { createCookie, checkCookie } from "./cookie.js";
+/*import { createCookie, checkCookie } from "./cookie.js";*/
 
 import path from "path";
 
@@ -59,14 +93,8 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-  const cookies = req.cookies;
-
-  const userAgent = req.headers["user-agent"];
-
   try {
-    const sessionToken = await checkCookie(cookies, userAgent);
-
-    if (sessionToken) {
+    if (req.session.key) {
       res.status(201).json();
     } else {
       const { email, password } = req.body;
@@ -77,16 +105,13 @@ app.post("/login", async (req, res) => {
         const correctPassword = await checkPassword(email, password);
 
         if (correctPassword) {
-          const { sessionName, sessionId, expires } = await createCookie(
-            user.id,
-            ip,
-            userAgent
-          );
+          req.session.key = req.sessionID;
 
-          res
-            .cookie(sessionName, sessionId, { expires: expires })
-            .status(201)
-            .json();
+          /*req.session.key[req.sessionID].token = nanoid();*/
+
+          console.log(req.session);
+
+          res.status(201).json();
         } else {
           res.status(401).json();
         }
@@ -100,13 +125,9 @@ app.post("/login", async (req, res) => {
 });
 
 app.delete("/login", async (req, res) => {
-  const cookies = req.cookies;
+  delete req.session.key;
 
-  try {
-    await deleteSession(cookies);
-  } catch (error) {
-    console.log(error);
-  }
+  res.sendStatus(201);
 });
 
 app.use(express.static(path.resolve("public")));
