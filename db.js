@@ -49,7 +49,7 @@ export async function getHashedPassword(email) {
   }
 }
 
-export async function addSession(id, date, userId, ip, userAgent) {
+/*export async function addSession(id, date, userId, ip, userAgent) {
   const query = `INSERT INTO sessions (id, expires_at, user_id, ip, user_agent) VALUES ('${id}', '${date}', '${userId}', '${ip}', '${userAgent}')`;
 
   try {
@@ -87,4 +87,4 @@ export async function deleteSession(cookies) {
   } catch (error) {
     console.log(error);
   }
-}
+}*/

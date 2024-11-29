@@ -36,7 +36,11 @@ app.use(
       port: process.env.PORT_REDIS,
 
       client: redisClient,
+
+      ttl: 60000 * 60,
     }),
+
+    name: "session",
 
     secret: process.env.SESSION_SECRET_KEY,
 
@@ -44,7 +48,7 @@ app.use(
 
     saveUninitialized: false,
 
-    cookie: { maxAge: 60000 },
+    cookie: { maxAge: 60000 * 60 },
   })
 );
 
@@ -94,8 +98,10 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   try {
-    if (req.session.key) {
-      res.status(201).json();
+    const session = await redisClient.get(`sess:${req.sessionID}`);
+
+    if (session) {
+      res.status(201).json(session.data);
     } else {
       const { email, password } = req.body;
 
@@ -105,13 +111,13 @@ app.post("/login", async (req, res) => {
         const correctPassword = await checkPassword(email, password);
 
         if (correctPassword) {
-          req.session.key = req.sessionID;
+          req.session.data = {
+            email: user.email,
+            name: user.name,
+            surname: user.surname,
+          };
 
-          /*req.session.key[req.sessionID].token = nanoid();*/
-
-          console.log(req.session);
-
-          res.status(201).json();
+          res.status(201).json(req.session.data);
         } else {
           res.status(401).json();
         }
@@ -125,9 +131,7 @@ app.post("/login", async (req, res) => {
 });
 
 app.delete("/login", async (req, res) => {
-  delete req.session.key;
-
-  res.sendStatus(201);
+  req.session.destroy();
 });
 
 app.use(express.static(path.resolve("public")));
