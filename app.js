@@ -40,7 +40,7 @@ app.use(
       ttl: 60000 * 60,
     }),
 
-    name: "session",
+    name: process.env.SESSION_NAME,
 
     secret: process.env.SESSION_SECRET_KEY,
 
@@ -101,7 +101,7 @@ app.post("/login", async (req, res) => {
     const session = await redisClient.get(`sess:${req.sessionID}`);
 
     if (session) {
-      res.status(201).json(session.data);
+      res.status(201).json(JSON.parse(session)["data"]);
     } else {
       const { email, password } = req.body;
 
@@ -130,8 +130,10 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.delete("/login", async (req, res) => {
-  req.session.destroy();
+app.post("/logout", async (req, res) => {
+  req.session.destroy((err) => {
+    res.clearCookie(process.env.SESSION_NAME, { path: "/" });
+  });
 });
 
 app.use(express.static(path.resolve("public")));
