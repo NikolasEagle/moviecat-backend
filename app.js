@@ -48,7 +48,7 @@ app.use(
 
     saveUninitialized: false,
 
-    cookie: { maxAge: 60000 * 60 },
+    cookie: { maxAge: 60 * 1000 * 60 * 24 * 7 },
   })
 );
 
