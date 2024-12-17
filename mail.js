@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   path: "/usr/sbin/sendmail",
   secure: true,
   dkim: {
-    domainName: process.env.DOMAIN,
+    domainName: `${process.env.DOMAIN}`,
     keySelector: "dkim", // The key you used in your DKIM TXT DNS Record
     privateKey: "/etc/opendkim/keys/moviecat.online/dkim.private", // Content of you private key
   },
@@ -21,7 +21,7 @@ export async function sendMail(email, name, surname, password) {
     await transporter.sendMail({
       from: `"Admin" <root@${process.env.DOMAIN}>`,
 
-      to: process.env.EMAIL,
+      to: `${process.env.EMAIL}`,
 
       subject: "Заявка на регистрацию пользователя",
 

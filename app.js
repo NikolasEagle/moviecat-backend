@@ -132,8 +132,28 @@ app.post("/login", async (req, res) => {
 
 app.post("/logout", async (req, res) => {
   req.session.destroy((err) => {
-    res.clearCookie(process.env.SESSION_NAME, { path: "/" });
+    res.clearCookie(process.env.SESSION_NAME);
   });
+});
+
+app.get("/api/movies/:page_id", async (req, res) => {
+  const response = await fetch(
+    `https://kinobd.xyz/api/films/top?page=${req.params.page_id}`
+  );
+
+  const body = await response.json();
+
+  res.json(body);
+});
+
+app.get("/api/movies/search/:query/:page_id", async (req, res) => {
+  const response = await fetch(
+    `https://kinobd.xyz/api/films/search/title?q=${req.params.query}&page=${req.params.page_id}`
+  );
+
+  const body = await response.json();
+
+  res.json(body);
 });
 
 app.use(express.static(path.resolve("public")));
