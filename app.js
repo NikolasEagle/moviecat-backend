@@ -8,10 +8,6 @@ const app = express();
 
 app.use(express.json());
 
-/*import cookieParser from "cookie-parser";
-
-app.use(cookieParser());*/
-
 import bodyParser from "body-parser";
 
 app.use(bodyParser.json());
@@ -149,6 +145,16 @@ app.get("/api/movies/:page_id", async (req, res) => {
 app.get("/api/movies/search/:query/:page_id", async (req, res) => {
   const response = await fetch(
     `https://kinobd.xyz/api/films/search/title?q=${req.params.query}&page=${req.params.page_id}`
+  );
+
+  const body = await response.json();
+
+  res.json(body);
+});
+
+app.get("/api/movie/:movie_id", async (req, res) => {
+  const response = await fetch(
+    `https://kinobd.xyz/api/films/${req.params.movie_id}`
   );
 
   const body = await response.json();
