@@ -54,8 +54,6 @@ import { addUser, checkUser } from "./db.js";
 
 import { createHashedPassword, checkPassword } from "./pw.js";
 
-/*import { createCookie, checkCookie } from "./cookie.js";*/
-
 import path from "path";
 
 import fs from "fs";
