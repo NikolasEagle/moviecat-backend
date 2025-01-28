@@ -132,7 +132,7 @@ app.post("/logout", async (req, res) => {
 
 app.get("/api/movies/:page_id", async (req, res) => {
   const response = await fetch(
-    `https://kinobd.xyz/api/films/top?page=${req.params.page_id}`
+    `https://kinobd.xyz/api/films?page=${req.params.page_id}`
   );
 
   const body = await response.json();
