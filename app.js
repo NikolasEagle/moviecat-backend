@@ -132,7 +132,7 @@ app.post("/logout", async (req, res) => {
 
 app.get("/api/movies/:page_id", async (req, res) => {
   const response = await fetch(
-    `https://kinobd.xyz/api/films?page=${req.params.page_id}`
+    `https://kinobd.xyz/api/films?page=${req.params.page_id}&with=persons%2Cgenres%2Ccountries%2Cpopularity%2Cimages`
   );
 
   const body = await response.json();
@@ -142,7 +142,7 @@ app.get("/api/movies/:page_id", async (req, res) => {
 
 app.get("/api/movies/search/:query/:page_id", async (req, res) => {
   const response = await fetch(
-    `https://kinobd.xyz/api/films/search/title?q=${req.params.query}&page=${req.params.page_id}`
+    `https://kinobd.xyz/api/films/search/title?q=${req.params.query}&page=${req.params.page_id}&with=persons%2Cgenres%2Ccountries%2Cpopularity%2Cimages`
   );
 
   const body = await response.json();
@@ -152,7 +152,7 @@ app.get("/api/movies/search/:query/:page_id", async (req, res) => {
 
 app.get("/api/movie/:movie_id", async (req, res) => {
   const response = await fetch(
-    `https://kinobd.xyz/api/films/${req.params.movie_id}`
+    `https://kinobd.xyz/api/films/${req.params.movie_id}?with=persons%2Cgenres%2Ccountries%2Cpopularity%2Cimages`
   );
 
   const body = await response.json();
