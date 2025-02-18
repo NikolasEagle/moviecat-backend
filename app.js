@@ -68,6 +68,14 @@ const httpsOptions = {
   cert: fs.readFileSync("/etc/letsencrypt/live/moviecat.online/fullchain.pem"),
 };
 
+import request from "request";
+
+const apiHost = process.env.API_HOST;
+
+const apiImagesHost = process.env.API_IMAGES_HOST;
+
+const apiKey = process.env.API_KEY;
+
 app.post("/register", async (req, res) => {
   const id = nanoid();
 
@@ -130,19 +138,39 @@ app.post("/logout", async (req, res) => {
   });
 });
 
+app.get(`/images/:img_id`, async (req, res) => {
+  request.get(`${apiImagesHost}/${req.params.img_id}`).pipe(res);
+});
+
 app.get("/api/movies/:page_id", async (req, res) => {
   const response = await fetch(
-    `https://kinobd.xyz/api/films?page=${req.params.page_id}&with=images`
+    `${apiHost}/3/trending/all/day?page=${req.params.page_id}&language=ru-RU`,
+    {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+    }
   );
 
   const body = await response.json();
+
+  console.log(body);
 
   res.json(body);
 });
 
 app.get("/api/movies/search/:query/:page_id", async (req, res) => {
   const response = await fetch(
-    `https://kinobd.xyz/api/films/search/title?q=${req.params.query}&page=${req.params.page_id}&with=images`
+    `${apiHost}/3/search/multi?query=${req.params.query}&page=${req.params.page_id}&language=ru-RU`,
+    {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+    }
   );
 
   const body = await response.json();
@@ -152,7 +180,31 @@ app.get("/api/movies/search/:query/:page_id", async (req, res) => {
 
 app.get("/api/movie/:movie_id", async (req, res) => {
   const response = await fetch(
-    `https://kinobd.xyz/api/films/${req.params.movie_id}?with=persons%2Cgenres%2Ccountries%2Cpopularity%2Cimages`
+    `${apiHost}/3/movie/${req.params.movie_id}?language=ru-RU`,
+    {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+    }
+  );
+
+  const body = await response.json();
+
+  res.json(body);
+});
+
+app.get("/api/tv/:movie_id", async (req, res) => {
+  const response = await fetch(
+    `${apiHost}/3/tv/${req.params.movie_id}?language=ru-RU`,
+    {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+    }
   );
 
   const body = await response.json();
