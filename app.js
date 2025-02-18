@@ -156,8 +156,6 @@ app.get("/api/movies/:page_id", async (req, res) => {
 
   const body = await response.json();
 
-  console.log(body);
-
   res.json(body);
 });
 
