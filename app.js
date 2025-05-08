@@ -20,17 +20,19 @@ import { RedisStore } from "connect-redis";
 
 import redis from "redis";
 
-const redisClient = redis.createClient();
+const redisClient = redis.createClient({
+  socket: {
+    host: process.env.REDIS_HOST,
+
+    port: process.env.REDIS_PORT,
+  },
+});
 
 await redisClient.connect();
 
 app.use(
   session({
     store: new RedisStore({
-      host: process.env.HOST_REDIS,
-
-      port: process.env.PORT_REDIS,
-
       client: redisClient,
 
       ttl: 60000 * 60,
@@ -53,20 +55,6 @@ import { nanoid } from "nanoid";
 import { addUser, checkUser } from "./db.js";
 
 import { createHashedPassword, checkPassword } from "./pw.js";
-
-import path from "path";
-
-import fs from "fs";
-
-import https from "https";
-
-const port = 443;
-
-const httpsOptions = {
-  key: fs.readFileSync("/etc/letsencrypt/live/moviecat.online/privkey.pem"),
-
-  cert: fs.readFileSync("/etc/letsencrypt/live/moviecat.online/fullchain.pem"),
-};
 
 import request from "request";
 
@@ -210,16 +198,8 @@ app.get("/api/tv/:movie_id", async (req, res) => {
   res.json(body);
 });
 
-app.use(express.static(path.resolve("public")));
-
-app.use("/", (req, res) => {
-  if (req.method === "GET") {
-    res.sendFile(path.resolve("public/index.html"));
-  }
-});
-
-https
-  .createServer(httpsOptions, app)
-  .listen(port, () => console.log(`Server is running`));
+app.listen(process.env.PORT, () =>
+  console.log(`Backend is running on ${process.env.PORT} port`)
+);
 
 export { app };

@@ -5,21 +5,28 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
-  sendmail: true,
-  newline: "unix",
-  path: "/usr/sbin/sendmail",
-  secure: true,
+  host: "postfix",
+  port: 587,
+  auth: {
+    user: process.env.SMTP_USER,
+
+    pass: process.env.SMTP_PASSWORD,
+  },
+  secure: false,
+  tls: {
+    rejectUnauthorized: false,
+  },
   dkim: {
     domainName: process.env.DOMAIN,
-    keySelector: "dkim", // The key you used in your DKIM TXT DNS Record
-    privateKey: "/etc/opendkim/keys/moviecat.online/dkim.private", // Content of you private key
+    keySelector: "dkim",
+    privateKey: `/etc/opendkim/keys/${process.env.DOMAIN}.private`,
   },
 });
 
 export async function sendMail(email, name, surname, password) {
   try {
     await transporter.sendMail({
-      from: `Admin <root@${process.env.DOMAIN}>`,
+      from: `MovieCat <${process.env.SMTP_USER}>`,
 
       to: process.env.EMAIL,
 
