@@ -60,7 +60,7 @@ import request from "request";
 
 const apiHost = process.env.API_HOST;
 
-const apiImagesHost = process.env.API_IMAGES_HOST;
+const apiImagesHost = process.env.API_HOST_IMAGES;
 
 const apiKey = process.env.API_KEY;
 
