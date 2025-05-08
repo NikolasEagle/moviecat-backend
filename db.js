@@ -5,15 +5,15 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const db = new pg.Pool({
-  user: process.env.USER_DATABASE,
+  user: process.env.POSTGRES_USER,
 
-  host: process.env.HOST_DATABASE,
+  host: process.env.POSTGRES_HOST,
 
-  database: process.env.NAME_DATABASE,
+  database: process.env.POSTGRES_DB,
 
-  password: process.env.PASSWORD_DATABASE,
+  password: process.env.POSTGRES_PASSWORD,
 
-  port: process.env.PORT_DATABASE,
+  port: process.env.POSTGRES_PORT,
 });
 
 export async function addUser(id, email, name, surname, hashedPassword) {
