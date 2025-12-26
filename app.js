@@ -198,8 +198,8 @@ app.get("/api/tv/:movie_id", async (req, res) => {
   res.json(body);
 });
 
-app.listen(process.env.PORT, () =>
-  console.log(`Backend is running on ${process.env.PORT} port`)
+app.listen(process.env.BACKEND_PORT, () =>
+  console.log(`Backend is running on ${process.env.BACKEND_PORT} port`)
 );
 
 export { app };
