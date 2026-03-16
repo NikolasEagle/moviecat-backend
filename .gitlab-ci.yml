@@ -13,6 +13,19 @@ workflow:
         - "Dockerfile"
       when: always
     - if: $CI_COMMIT_BRANCH == "main"
+      changes:
+        - ".github/**/*"
+        - "docs/**/*"
+        - "node_modules/**/*"
+        - "public/**/*"
+        - ".gitignore"
+        - ".gitlab-ci.yml"
+        - "LICENSE"
+        - "package-lock.json"
+        - "package.json"
+        - "README.md"
+      when: never
+    - if: $CI_COMMIT_BRANCH == "main"
       when: always
     - when: never
 
