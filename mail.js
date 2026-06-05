@@ -5,21 +5,18 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
-  host: "postfix",
-  port: 587,
+  host: process.env.MAIL_DOMAIN,
+  port: Number(process.env.SMTP_PORT),
   auth: {
     user: process.env.SMTP_USER,
 
     pass: process.env.SMTP_PASSWORD,
   },
-  secure: false,
-  tls: {
-    rejectUnauthorized: false,
-  },
+  secure: Number(process.env.SMTP_PORT) === 465,
   dkim: {
     domainName: process.env.DOMAIN,
-    keySelector: "dkim",
-    privateKey: `/etc/opendkim/keys/${process.env.DOMAIN}.private`,
+    keySelector: process.env.DKIM_SELECTOR,
+    privateKey: process.env.DKIM_PRIVATE_KEY.replace(/\\n/g, "\n"),
   },
 });
 
