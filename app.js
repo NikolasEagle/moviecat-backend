@@ -69,8 +69,8 @@ app.post("/register", async (req, res) => {
 
   const { email, name, surname } = req.body;
 
-  if (email == 'undefined' || name == 'undefined' || surname == 'undefined') {
-    res.status(400);
+  if (!email || !name || !surname || email === 'undefined' || name === 'undefined' || surname === 'undefined') {
+    return res.status(400).json({ error: 'Email, name and surname are required' });
   }
 
   try {
