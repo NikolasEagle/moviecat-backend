@@ -69,6 +69,10 @@ app.post("/register", async (req, res) => {
 
   const { email, name, surname } = req.body;
 
+  if (email == 'undefined' || name == 'undefined' || surname == 'undefined') {
+    res.status(400);
+  }
+
   try {
     const user = await checkUser(email);
 
